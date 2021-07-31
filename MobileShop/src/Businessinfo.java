@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MobileShop_ERP_System;
+
 
 /**
  *
@@ -18,6 +18,10 @@ public class Businessinfo extends javax.swing.JInternalFrame {
         initComponents();
     }
 
+      public static void Businessinfo(String args[]){
+     
+     
+     }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

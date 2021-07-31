@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MobileShop_ERP_System;
+
 
 /**
  *
@@ -17,6 +17,10 @@ public class SalesReport extends javax.swing.JInternalFrame {
     public SalesReport() {
         initComponents();
     }
+     public static void SalesReport(String args[]){
+     
+     
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package MobileShop_ERP_System;
+
 
 /**
  *
@@ -253,7 +253,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_Add_vendorsActionPerformed
 
     private void Add_usersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_usersActionPerformed
-         Users ur = new   Users();
+       Users ur = new   Users();
        this.add(ur);
        ur.setVisible(true);
     }//GEN-LAST:event_Add_usersActionPerformed
@@ -308,9 +308,10 @@ public class Main extends javax.swing.JFrame {
        al.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+     public static void Main(String args[]){
+     
+     
+     }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
