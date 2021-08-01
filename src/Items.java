@@ -314,6 +314,7 @@ public class Items extends javax.swing.JInternalFrame {
             }
         });
 
+        txtspecification.setBackground(new java.awt.Color(102, 0, 102));
         txtspecification.setColumns(20);
         txtspecification.setRows(5);
         jScrollPane1.setViewportView(txtspecification);
