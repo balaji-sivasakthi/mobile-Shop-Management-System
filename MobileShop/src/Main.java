@@ -253,7 +253,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_Add_vendorsActionPerformed
 
     private void Add_usersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_usersActionPerformed
-       Users ur = new   Users();
+       User ur = new   User();
        this.add(ur);
        ur.setVisible(true);
     }//GEN-LAST:event_Add_usersActionPerformed
