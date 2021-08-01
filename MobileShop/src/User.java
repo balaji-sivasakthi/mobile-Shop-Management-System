@@ -344,7 +344,7 @@ public class User extends javax.swing.JInternalFrame {
 
         txtid.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtid.setForeground(new java.awt.Color(255, 255, 255));
-        txtid.setText("jLabel4");
+        txtid.setText("label");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
