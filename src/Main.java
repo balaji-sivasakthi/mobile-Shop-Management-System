@@ -246,9 +246,13 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_MasterActionPerformed
 
     private void Add_itemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_itemsActionPerformed
-        Items it = new Items();
-       this.add(it);
-       it.setVisible(true);
+        try {
+            Items it = new Items();
+            this.add(it);
+            it.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_Add_itemsActionPerformed
 
     private void Add_vendorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Add_vendorsActionPerformed

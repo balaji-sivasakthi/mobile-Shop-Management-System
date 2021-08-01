@@ -1,4 +1,5 @@
 
+import com.sun.glass.events.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -7,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
@@ -33,11 +35,12 @@ public class Vendors extends javax.swing.JInternalFrame {
      */
     public Vendors() throws SQLException {
         initComponents();
-         initComponents();
+          autoID();
         showDate();
         showTime();
         Connect();
         load();
+       
 
         
     }
@@ -48,7 +51,7 @@ public class Vendors extends javax.swing.JInternalFrame {
     void showDate() {
         Date dt = new Date();
         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-        txtdate.setText(s.format(dt));
+        txtdate2.setText(s.format(dt));
 
     }
 
@@ -58,7 +61,7 @@ public class Vendors extends javax.swing.JInternalFrame {
             public void actionPerformed(ActionEvent e) {
                 Date dt = new Date();
                 SimpleDateFormat s = new SimpleDateFormat("hh:mm:ss ");
-                txttime.setText(s.format(dt));
+                txttime2.setText(s.format(dt));
 
             }
         });
@@ -68,25 +71,25 @@ public class Vendors extends javax.swing.JInternalFrame {
 
         int a;
         try {
-            pst = con.prepareStatement("select * from Vendor");
+            pst = con.prepareStatement("select * from vendor");
             ResultSet rs = pst.executeQuery();
 
             ResultSetMetaData rd = rs.getMetaData();
             a = rd.getColumnCount();
-            df = (DefaultTableModel) jTable1.getModel();
+            df = (DefaultTableModel) jTable3.getModel();
             df.setRowCount(0);
 
             while (rs.next()) {
                 Vector v2 = new Vector();
                 for (int i = 1; i <= a; i++) {
-                    v2.add(rs.getString("VendorID"));
-                    v2.add(rs.getString("Name"));
-                    v2.add(rs.getString("Number"));
-                    v2.add(rs.getString("Email"));
-                    v2.add(rs.getString("Address"));
+                    v2.add(rs.getString("id"));
+                    v2.add(rs.getString("name"));
+                    v2.add(rs.getString("number"));
+                    v2.add(rs.getString("email"));
+                    v2.add(rs.getString("address"));
                  
-                    v2.add(rs.getString("Date"));
-                    v2.add(rs.getString("Time"));
+                    v2.add(rs.getString("date"));
+                    v2.add(rs.getString("time"));
                     
                 }
                 df.addRow(v2); 
@@ -102,12 +105,42 @@ public class Vendors extends javax.swing.JInternalFrame {
     public void Connect() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/mobile_erp_system", "root", "");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+     public void autoID()
+    {
+       
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://localhost/mobile_erp_system","root","");
+            Statement s = con.createStatement();
+            ResultSet rs = s.executeQuery("select MAX(id) from vendor");
+            rs.next();
+            rs.getString("MAX(id)");
+            if(rs.getString("MAX(id)") == null)
+            {
+                txtid.setText("VD001");
+            }
+            else
+            {
+                long id = Long.parseLong(rs.getString("MAX(id)").substring(2,rs.getString("MAX(id)").length()));
+                id++;
+                 txtid.setText("VD" + String.format("%03d", id));
+                
+                
+            }
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        
     }
 
      public static void Vendors(String args[]){
@@ -187,6 +220,8 @@ public class Vendors extends javax.swing.JInternalFrame {
         jButton15 = new javax.swing.JButton();
         txtdate2 = new javax.swing.JLabel();
         txttime2 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        txtid = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(102, 0, 102));
         setClosable(true);
@@ -603,45 +638,70 @@ public class Vendors extends javax.swing.JInternalFrame {
 
         jLabel17.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel17.setText(" Name      :");
+        jLabel17.setText(" Name           :");
 
         jLabel18.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel18.setText("Address   :");
+        jLabel18.setText("Address    :");
 
         jLabel19.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel19.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel19.setText("Email        :");
+        jLabel19.setText("Email            :");
 
         jLabel20.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setText("Number  :");
+        jLabel20.setText("Number       :");
+
+        txtname2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtname2KeyPressed(evt);
+            }
+        });
+
+        txtnumber2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtnumber2KeyPressed(evt);
+            }
+        });
+
+        txtaddress2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtaddress2KeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel20)
+                                .addGap(60, 60, 60)
+                                .addComponent(txtnumber2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 4, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtname2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel19)
-                            .addComponent(jLabel18))
-                        .addGap(56, 56, 56)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jLabel19)
+                                .addGap(56, 56, 56))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel18)
+                                .addGap(65, 65, 65)))
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtemail2)
-                            .addComponent(txtaddress2)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel20)
-                        .addGap(60, 60, 60)
-                        .addComponent(txtnumber2, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 4, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtname2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                            .addComponent(txtaddress2))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -658,11 +718,11 @@ public class Vendors extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtemail2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19))
-                .addGap(36, 36, 36)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtaddress2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(105, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
@@ -721,92 +781,109 @@ public class Vendors extends javax.swing.JInternalFrame {
         });
 
         txtdate2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        txtdate2.setForeground(new java.awt.Color(255, 255, 255));
         txtdate2.setText("Date");
 
         txttime2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        txttime2.setForeground(new java.awt.Color(255, 255, 255));
         txttime2.setText("Time");
+
+        jLabel22.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel22.setText("Item ID");
+
+        txtid.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
+        txtid.setText("jLabel7");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addComponent(jLabel22)
+                        .addGap(40, 40, 40)
+                        .addComponent(txtid)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel16)
+                        .addGap(444, 444, 444)
+                        .addComponent(txtdate2)
+                        .addGap(48, 48, 48)
+                        .addComponent(txttime2))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(txtdate2)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel16)
-                                .addGap(535, 535, 535)
-                                .addComponent(txttime2))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(67, 67, 67)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 742, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 43, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(50, 50, 50)
+                                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(29, 29, 29)))
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 742, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(79, 79, 79)))
+                .addGap(54, 54, 54))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(650, Short.MAX_VALUE)
+                    .addContainerGap(678, Short.MAX_VALUE)
                     .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(650, Short.MAX_VALUE)))
+                    .addContainerGap(678, Short.MAX_VALUE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 650, Short.MAX_VALUE)
+                    .addGap(0, 678, Short.MAX_VALUE)
                     .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 650, Short.MAX_VALUE)))
+                    .addGap(0, 678, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel16)
-                        .addGap(51, 51, 51))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtdate2)
-                            .addComponent(txttime2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(38, 38, 38)))
+                            .addComponent(txttime2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel22)
+                                .addComponent(txtid))
+                            .addComponent(jLabel16))))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(40, 40, 40)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(104, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(35, 35, 35)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(30, 30, 30))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(324, Short.MAX_VALUE)
+                    .addContainerGap(261, Short.MAX_VALUE)
                     .addComponent(jInternalFrame1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(324, Short.MAX_VALUE)))
+                    .addContainerGap(254, Short.MAX_VALUE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 324, Short.MAX_VALUE)
+                    .addGap(0, 261, Short.MAX_VALUE)
                     .addComponent(jInternalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 324, Short.MAX_VALUE)))
+                    .addGap(0, 254, Short.MAX_VALUE)))
         );
 
         pack();
@@ -814,242 +891,118 @@ public class Vendors extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        df = (DefaultTableModel) jTable1.getModel();
-        int selected = jTable1.getSelectedRow();
-
-        int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
-
-        String Name = txtname.getText();
-        String Number = txtnumber.getText();
-        String Email = txtemail.getText();
-        String Address = txtaddress.getText();
-
-        try {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
-            //  pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount)values("+Name+","+Number+","+Email+","+Address+","+Amount+")");
-            pst = con.prepareStatement("update Vendor set Name = ?,Number = ?,Email = ?,Address = ? where VendorID = ?");
-
-            pst.setString(1, Name);
-            pst.setString(2, Number);
-            pst.setString(3, Email);
-            pst.setString(4, Address);
-
-            pst.setInt(5, id);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Updated successfully");
-
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
-            txtname.requestFocus();
-            load();
-            jButton2.setEnabled(true);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        }
+     
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         // TODO add your handling code here:
-        String Name = txtname.getText();
-        String Number = txtnumber.getText();
-        String Email = txtemail.getText();
-        String Address = txtaddress.getText();
-
-        String Date=txtdate.getText();
-        String Time=txttime.getText();
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
-            //pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount,Date)values(+Name+,+Number+,+Email+,+Address+,+Amount+,+Time+)");
-            pst = con.prepareStatement("insert into Vendor(Name,Number,Email,Address,Date,Time)values(?,?,?,?,?,?)");
-
-            pst.setString(1, Name);
-            pst.setString(2, Number);
-            pst.setString(3, Email);
-            pst.setString(4, Address);
-
-            pst.setString(5,Date);
-            pst.setString(6,Time);
-            //  pst.setString(6, Time);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Recorded Successfully");
-
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
-
-            txtname.requestFocus();
-            load();
-
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+       
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        try {
-            // TODO add your handling code here:
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
-
-            txtname.requestFocus();
-            load();
-            jButton2.setEnabled(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        }
+      
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        try {
-            // TODO add your handling code here:
-            df = (DefaultTableModel) jTable1.getModel();
-            int selected = jTable1.getSelectedRow();
-            int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
-
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
-            //  pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount)values("+Name+","+Number+","+Email+","+Address+","+Amount+")");
-            pst = con.prepareStatement("delete from Vendor where VendorID = ?");
-
-            pst.setInt(1, id);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Record Deleted");
-
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
-
-            txtname.requestFocus();
-            load();
-            jButton2.setEnabled(true);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+      
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
-        df = (DefaultTableModel) jTable1.getModel();
-
-        int selected = jTable1.getSelectedRow();
-
-        int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
-
-        txtname.setText(df.getValueAt(selected, 1).toString());
-        txtnumber.setText(df.getValueAt(selected, 2).toString());
-        txtemail.setText(df.getValueAt(selected, 3).toString());
-        txtaddress.setText(df.getValueAt(selected, 4).toString());
-
-        jButton2.setEnabled(false);
+       
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        this.dispose();
+        
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        df = (DefaultTableModel) jTable1.getModel();
-        int selected = jTable1.getSelectedRow();
-
-        int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
-
-        String Name = txtname.getText();
-        String Number = txtnumber.getText();
-        String Email = txtemail.getText();
-        String Address = txtaddress.getText();
-
-        try {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
-            //  pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount)values("+Name+","+Number+","+Email+","+Address+","+Amount+")");
-            pst = con.prepareStatement("update Vendor set Name = ?,Number = ?,Email = ?,Address = ? where VendorID = ?");
-
-            pst.setString(1, Name);
-            pst.setString(2, Number);
-            pst.setString(3, Email);
-            pst.setString(4, Address);
-
-            pst.setInt(5, id);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Updated Successfully");
-
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
-            txtname.requestFocus();
-            load();
-            jButton2.setEnabled(true);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        }
+      
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
         // TODO add your handling code here:
-        String Name = txtname.getText();
-        String Number = txtnumber.getText();
-        String Email = txtemail.getText();
-        String Address = txtaddress.getText();
+      
+    }//GEN-LAST:event_jButton7ActionPerformed
 
-        String Date=txtdate.getText();
-        String Time=txttime.getText();
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+      
+
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+       
+
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+      
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        // TODO add your handling code here:
+        
+        df = (DefaultTableModel) jTable3.getModel();
+
+        int selected = jTable3.getSelectedRow();
+
+        String id = df.getValueAt(selected, 0).toString();
+
+        txtname2.setText(df.getValueAt(selected, 1).toString());
+        txtnumber2.setText(df.getValueAt(selected, 2).toString());
+        txtemail2.setText(df.getValueAt(selected, 3).toString());
+        txtaddress2.setText(df.getValueAt(selected, 4).toString());
+
+        jButton12.setEnabled(false);
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+
+     this.dispose();
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+          String id=txtid.getText();
+        String Name = txtname2.getText();
+         int Number = Integer.parseInt(txtnumber2.getText());
+        String Email = txtemail2.getText();
+        String Address = txtaddress2.getText();
+ 
+        String Date=txtdate2.getText();
+        String Time=txttime2.getText();
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/mobile_erp_system", "root", "");
             //pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount,Date)values(+Name+,+Number+,+Email+,+Address+,+Amount+,+Time+)");
-            pst = con.prepareStatement("insert into Vendor(Name,Number,Email,Address,Date,Time)values(?,?,?,?,?,?)");
+            pst = con.prepareStatement("insert into vendor(id,name,number,email,address,date,time)values(?,?,?,?,?,?,?)");
+           pst.setString(1,id);
+            pst.setString(2, Name);
+            pst.setInt(3, Number);
+            pst.setString(4, Email);
+            pst.setString(5, Address);
 
-            pst.setString(1, Name);
-            pst.setString(2, Number);
-            pst.setString(3, Email);
-            pst.setString(4, Address);
-
-            pst.setString(5,Date);
-            pst.setString(6,Time);
+            pst.setString(6,Date);
+            pst.setString(7,Time);
             //  pst.setString(6, Time);
             pst.executeUpdate();
             JOptionPane.showMessageDialog(this, "Recorded Successfully");
 
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
+            txtname2.setText("");
+            txtnumber2.setText("");
+            txtemail2.setText("");
+            txtaddress2.setText("");
 
-            txtname.requestFocus();
+            txtname2.requestFocus();
             load();
 
         } catch (ClassNotFoundException ex) {
@@ -1058,155 +1011,123 @@ public class Vendors extends javax.swing.JInternalFrame {
             Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_jButton12ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+   df = (DefaultTableModel) jTable3.getModel();
+        int selected = jTable3.getSelectedRow();
+
+         String id =df.getValueAt(selected, 0).toString();
+        String Name = txtname2.getText();
+        int Number = Integer.parseInt(txtnumber2.getText());
+  
+        String Email = txtemail2.getText();
+        String Address = txtaddress2.getText();
+        String Date=txtdate2.getText();
+        String Time=txttime2.getText();
+
+        try {
+            try {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            con = DriverManager.getConnection("jdbc:mysql://localhost/mobile_erp_system", "root", "");
+            //  pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount)values("+Name+","+Number+","+Email+","+Address+","+Amount+")");
+            pst = con.prepareStatement("update vendor set name = ?,number = ?,email = ?,address = ?,date=?,time=? where id = ?");
+
+            pst.setString(1, Name);
+            pst.setInt(2, Number);
+            pst.setString(3, Email);
+            pst.setString(4, Address);
+            pst.setString(5, Date);
+            pst.setString(6,Time);
+
+            pst.setString(7, id);
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Updated successfully");
+
+            txtname2.setText("");
+            txtnumber2.setText("");
+            txtemail2.setText("");
+            txtaddress2.setText("");
+            txtname2.requestFocus();
+            load();
+          jButton12.setEnabled(true);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
+        }      
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         try {
             // TODO add your handling code here:
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
+            txtname2.setText("");
+            txtnumber2.setText("");
+            txtemail2.setText("");
+            txtaddress2.setText("");
 
-            txtname.requestFocus();
+            txtname2.requestFocus();
             load();
-            jButton2.setEnabled(true);
+            jButton12.setEnabled(true);
         } catch (SQLException ex) {
             Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }//GEN-LAST:event_jButton14ActionPerformed
 
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         try {
             // TODO add your handling code here:
-            df = (DefaultTableModel) jTable1.getModel();
-            int selected = jTable1.getSelectedRow();
-            int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
+            df = (DefaultTableModel) jTable3.getModel();
+            int selected = jTable3.getSelectedRow();
+            String id = df.getValueAt(selected, 0).toString();
 
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
             }
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/mobile_erp_system", "root", "");
             //  pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount)values("+Name+","+Number+","+Email+","+Address+","+Amount+")");
-            pst = con.prepareStatement("delete from Vendor where VendorID = ?");
+            pst = con.prepareStatement("delete from vendor where id = ?");
 
-            pst.setInt(1, id);
+            pst.setString(1, id);
             pst.executeUpdate();
             JOptionPane.showMessageDialog(this, "Record Deleted");
 
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
+            txtname2.setText("");
+            txtnumber2.setText("");
+            txtemail2.setText("");
+            txtaddress2.setText("");
 
-            txtname.requestFocus();
+            txtname2.requestFocus();
             load();
-            jButton2.setEnabled(true);
+            jButton12.setEnabled(true);
 
         } catch (SQLException ex) {
             Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-        // TODO add your handling code here:
-        df = (DefaultTableModel) jTable1.getModel();
-
-        int selected = jTable1.getSelectedRow();
-
-        int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
-
-        txtname.setText(df.getValueAt(selected, 1).toString());
-        txtnumber.setText(df.getValueAt(selected, 2).toString());
-        txtemail.setText(df.getValueAt(selected, 3).toString());
-        txtaddress.setText(df.getValueAt(selected, 4).toString());
-
-        jButton2.setEnabled(false);
-    }//GEN-LAST:event_jTable2MouseClicked
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
-        // TODO add your handling code here:
-        df = (DefaultTableModel) jTable1.getModel();
-
-        int selected = jTable1.getSelectedRow();
-
-        int id = Integer.parseInt(df.getValueAt(selected, 0).toString());
-
-        txtname.setText(df.getValueAt(selected, 1).toString());
-        txtnumber.setText(df.getValueAt(selected, 2).toString());
-        txtemail.setText(df.getValueAt(selected, 3).toString());
-        txtaddress.setText(df.getValueAt(selected, 4).toString());
-
-        jButton2.setEnabled(false);
-    }//GEN-LAST:event_jTable3MouseClicked
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-
-        // TODO add your handling code here:
-        String Name = txtname.getText();
-        String Number = txtnumber.getText();
-        String Email = txtemail.getText();
-        String Address = txtaddress.getText();
-
-        String Date=txtdate.getText();
-        String Time=txttime.getText();
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/recharge", "root", "");
-            //pst = con.prepareStatement("insert into customer(Name,Number,Email,Address,Amount,Date)values(+Name+,+Number+,+Email+,+Address+,+Amount+,+Time+)");
-            pst = con.prepareStatement("insert into Vendor(Name,Number,Email,Address,Date,Time)values(?,?,?,?,?,?)");
-
-            pst.setString(1, Name);
-            pst.setString(2, Number);
-            pst.setString(3, Email);
-            pst.setString(4, Address);
-
-            pst.setString(5,Date);
-            pst.setString(6,Time);
-            //  pst.setString(6, Time);
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Recorded Successfully");
-
-            txtname.setText("");
-            txtnumber.setText("");
-            txtemail.setText("");
-            txtaddress.setText("");
-
-            txtname.requestFocus();
-            load();
-
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(Vendors.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton13ActionPerformed
-
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton14ActionPerformed
-
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void txtname2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtname2KeyPressed
+          if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtnumber2.requestFocus();
+        }
+    }//GEN-LAST:event_txtname2KeyPressed
+
+    private void txtnumber2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnumber2KeyPressed
+           if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtemail2.requestFocus();
+        }
+    }//GEN-LAST:event_txtnumber2KeyPressed
+
+    private void txtaddress2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtaddress2KeyPressed
+            if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            txtaddress2.requestFocus();
+        }
+    }//GEN-LAST:event_txtaddress2KeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1239,6 +1160,7 @@ public class Vendors extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1264,6 +1186,7 @@ public class Vendors extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtemail;
     private javax.swing.JTextField txtemail1;
     private javax.swing.JTextField txtemail2;
+    private javax.swing.JLabel txtid;
     private javax.swing.JTextField txtname;
     private javax.swing.JTextField txtname1;
     private javax.swing.JTextField txtname2;
